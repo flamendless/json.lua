@@ -55,7 +55,6 @@ local function encode_nil(val)
   return "null"
 end
 
-
 local function encode_table(val, stack)
   local res = {}
   stack = stack or {}
@@ -97,7 +96,6 @@ local function encode_table(val, stack)
   end
 end
 
-
 local function encode_string(val)
   return '"' .. val:gsub('[%z\1-\31\\"]', escape_char) .. '"'
 end
@@ -111,6 +109,10 @@ local function encode_number(val)
   return string.format("%.14g", val)
 end
 
+local function encode_vector2(val)
+	local t = { val.x, val.y }
+	return encode_table(t)
+end
 
 local type_func_map = {
   [ "nil"     ] = encode_nil,
@@ -118,8 +120,8 @@ local type_func_map = {
   [ "string"  ] = encode_string,
   [ "number"  ] = encode_number,
   [ "boolean" ] = tostring,
+  [ "cdata" ] = encode_vector2,
 }
-
 
 encode = function(val, stack)
   local t = type(val)
@@ -130,11 +132,9 @@ encode = function(val, stack)
   error("unexpected type '" .. t .. "'")
 end
 
-
 function json.encode(val)
   return ( encode(val) )
 end
-
 
 -------------------------------------------------------------------------------
 -- Decode
