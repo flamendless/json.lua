@@ -109,9 +109,9 @@ local function encode_number(val)
   return string.format("%.14g", val)
 end
 
-local function encode_vector2(val)
+local function encode_vector2(val, stack)
 	local t = { val.x, val.y }
-	return encode_table(t)
+	return encode_table(t, stack)
 end
 
 local type_func_map = {

@@ -1,6 +1,35 @@
 # ![json.lua](https://cloud.githubusercontent.com/assets/3920290/9281532/99e5e0cc-42bd-11e5-8fce-eaff2f7fc681.png)  
 A lightweight JSON library for Lua
 
+# This fork is to support [brinevector](https://github.com/novemberisms/brinevector)
+* Encoding works, but decoding does not (I can't quite understand the decoding part) so here's what I do in my project to work around that:
+```lua
+local file = love.filesystem.read("entity_data.json") --read the file
+local data = JSON.decode(file) --decode that file
+
+--recursively/manually set the variables needed to be in brinevector Vector2 data
+--this is the sample data I want to have after decoding:
+local Data = {
+	test = {
+		UNITS = {
+			grid_pos = Vector2(3, 3), --decoded is 'grid_pos = { 3, 3 }' which is a normal table
+			offset = Vector2(32, 32),
+		}
+	}
+}
+
+for state, a in pairs(data) do
+	for ent_type, b in pairs(a) do
+		for id, c in pairs(b) do
+			c.grid_pos = Vec2(c.grid_pos[1], c.grid_pos[2])
+			c.offset = Vec2(c.offset[1], c.offset[2])
+		end
+	end
+end
+
+--Finally set your data to the modified data
+self.data = data
+```
 
 ## Features
 * Implemented in pure Lua: works with 5.1, 5.2, 5.3 and JIT
